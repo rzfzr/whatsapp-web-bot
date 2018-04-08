@@ -188,30 +188,27 @@
 		cb();
 	}
 
-	//
-	// MAIN LOGIC
-	//
 	const start = (_chats, cnt = 0) => {
 		// get next unread chat
 		const chats = _chats || getUnreadChats();
 		const chat = chats[cnt];
 
 		var processLastMsgOnChat = false;
-		var lastMsg;
+		var untreatedMessage;
 
 		if (!lastMessageOnChat) {
 			if (false === (lastMessageOnChat = getLastMsg())) {
 				lastMessageOnChat = true; //to prevent the first "if" to go true everytime
 			} else {
-				lastMsg = lastMessageOnChat;
+				untreatedMessage = lastMessageOnChat;
 			}
 		} else if (lastMessageOnChat != getLastMsg() && getLastMsg() !== false && !didYouSendLastMsg()) {
-			lastMessageOnChat = lastMsg = getLastMsg();
+			lastMessageOnChat = untreatedMessage = getLastMsg();
 			processLastMsgOnChat = true;
 		}
 
 		if (!processLastMsgOnChat && (chats.length == 0 || !chat)) {
-			console.log(new Date(), 'nothing to do now... (1)', chats.length, chat);
+			// console.log('nothing to do now... (1)', chats.length, chat);
 			return goAgain(start, 3);
 		}
 
@@ -219,13 +216,13 @@
 		var title;
 		if (!processLastMsgOnChat) {
 			title = getElement("chat_title", chat).title + '';
-			lastMsg = (getElement("chat_lastmsg", chat) || { innerText: '' }).innerText; //.last-msg returns null when some user is typing a message to me
+			untreatedMessage = (getElement("chat_lastmsg", chat) || { innerText: '' }).innerText; //.last-msg returns null when some user is typing a message to me
 		} else {
 			title = getElement("selected_title").title;
 		}
 		// avoid sending duplicate messaegs
-		if (ignoreLastMsg[title] && (ignoreLastMsg[title]) == lastMsg) {
-			console.log(new Date(), 'nothing to do now... (2)', title, lastMsg);
+		if (ignoreLastMsg[title] && (ignoreLastMsg[title]) == untreatedMessage) {
+			// console.log('nothing to do now... (2)', title, lastMsg);
 			return goAgain(() => { start(chats, cnt + 1) }, 0.1);
 		}
 
@@ -234,52 +231,46 @@
 
 
 
-		var lines = lastMsg.split('\n');
-		lastName = lines[0].slice(0, -1)
+		var lines = untreatedMessage.split('\n');
+		username = lines[0].slice(0, -1)
 		lines.splice(0, 1);
-		var actualMsg = lines.join('\n').trim().toLowerCase();
+		var message = lines.join('\n').trim().toLowerCase();
 
-
-
-		console.log('lastname:' + lastName)
-		console.log('actual:' + actualMsg)
-
-
-		if (lastName == 'Brutus') {
+		if (username == 'Brutus') {
 			sendText = 'Brutus, o simpatico'
-		} else if (lastName == 'GabrielGomes') {
+		} else if (username == 'GabrielGomes') {
 			if (Math.floor((Math.random() * 6) + 1) == 1)
 				sendText = '#JovemEmpreendedor'
-		} else if (lastName == 'Kaio') {
+		} else if (username == 'Kaio') {
 			if (Math.floor((Math.random() * 6) + 1) == 1)
 				sendText = 'fica quieto ai kaio'
-		} else if (lastName == 'Juan') {
+		} else if (username == 'Juan') {
 			if (Math.floor((Math.random() * 6) + 1) == 1)
 				sendText = 'olha o viadinho'
 		} else {
-			if (actualMsg == 'sim') {
+			if (message == 'sim') {
 				sendText = `não`
 			}
-			if (actualMsg == 'não') {
+			if (message == 'não') {
 				sendText = `sim`
 			}
-			if (actualMsg == 'mentira') {
+			if (message == 'mentira') {
 				sendText = 'verdade'
 			}
-			if (actualMsg == 'verdade') {
+			if (message == 'verdade') {
 				sendText = 'mentira'
 			}
-			if (actualMsg == 'kaio é idiota?') {
+			if (message == 'kaio é idiota?') {
 				sendText = 'com toda certeza'
 			}
-			if (actualMsg == 'good bot') {
+			if (message == 'good bot') {
 				sendText = 'thanks man'
 			}
-			if (actualMsg == 'bad bot') {
+			if (message == 'bad bot') {
 				sendText = 'ah, vai se fuder vc tambem'
 			}
 
-			if (actualMsg == 'ping' || actualMsg == 'pong') {
+			if (message == 'ping' || message == 'pong') {
 				if (Math.floor((Math.random() * 2) + 1) == 1) {
 					sendText = 'ping'
 				} else {
@@ -287,41 +278,41 @@
 				}
 			}
 
-			if (actualMsg.includes('@help')) {
+			if (message.includes('@help')) {
 				sendText = `
-				Cool ${lastName}! Some commands that you can send me:
+				Cool ${username}! Some commands that you can send me:
 				1. *@time*`
 			}
-			if (actualMsg == 'rola?') sendtext = 'rola!'
-			if (actualMsg == 'kkk') sendtext = '#schutzstaffel'
-			if (actualMsg == 'meu') sendtext = 'meu'
+			if (message == 'rola?') sendtext = 'rola!'
+			if (message == 'kkk') sendtext = '#schutzstaffel'
+			if (message == 'meu') sendtext = 'meu'
 
-			if (actualMsg.includes('aula')) {
-				if (actualMsg.includes('ricardo') || actualMsg.includes('redes') || actualMsg.includes('IA') || actualMsg.includes('glauco')) {
+			if (message.includes('aula')) {
+				if (message.includes('ricardo') || message.includes('redes') || message.includes('IA') || message.includes('glauco')) {
 
 					sendText = `"aula"`
 				}
 			}
-			if (actualMsg.startsWith('para quando') || actualMsg.startsWith('pra quando') || actualMsg.startsWith('quando')) {
+			if (message.startsWith('para quando') || message.startsWith('pra quando') || message.startsWith('quando')) {
 				sendText = 'um dia desses ai trouxa'
 			}
-			if (actualMsg.startsWith('lab') || actualMsg.startsWith('onde') || actualMsg.startsWith('qual lab')) {
+			if (message.startsWith('lab') || message.startsWith('onde') || message.startsWith('qual lab')) {
 				sendText = 'lab ' + (Math.floor((Math.random() * 4) + 1)).toString();
 			}
 
-			if (actualMsg.includes('deus')) {
+			if (message.includes('deus')) {
 				sendText = 'deus nem existe'
 			}
 
 
-			if (actualMsg.indexOf('@time') > -1) {
+			if (message.indexOf('@time') > -1) {
 				sendText = `*${new Date()}*`
 			}
 			// if(actualMsg.includes('@greet(della)')){
 
 			// 	sendText='Happy Birthday Della!';
 			// }
-			if (actualMsg.includes('@joke')) {
+			if (message.includes('@joke')) {
 				sendText = jokeList[rand(jokeList.length - 1)];
 
 			}
@@ -333,12 +324,12 @@
 
 		// that's sad, there's not to send back...
 		if (!sendText) {
-			ignoreLastMsg[title] = lastMsg;
-			console.log(new Date(), 'new message ignored -> ', title, lastMsg);
+			ignoreLastMsg[title] = untreatedMessage;
+			console.log('ignored -> ', title, username, message);
 			return goAgain(() => { start(chats, cnt + 1) }, 0.1);
 		}
 
-		console.log(new Date(), 'new message to process, uhull -> ', title, lastMsg);
+		console.log('to process -> ', title, username, message);
 
 		// select chat and send message
 		if (!processLastMsgOnChat) {
