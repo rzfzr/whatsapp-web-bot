@@ -2,6 +2,11 @@
 	//
 	// GLOBAL VARS AND CONFIGS
 	//
+
+	var lastMessage = 'a';
+	var lastUsername = 'a';
+
+
 	var lastMessageOnChat = false;
 	var ignoreLastMsg = {};
 	var elementConfig = {
@@ -12,6 +17,8 @@
 		"chat_active": [0, 0],
 		"selected_title": [1, 0, 5, 3, 0, 1, 1, 0, 0, 0]
 	};
+
+
 
 	const jokeList = [
 		`
@@ -129,9 +136,7 @@
 
 	// Call the main function again
 	const goAgain = (fn, sec) => {
-		// const chat = document.querySelector('div.chat:not(.unread)')
-		// selectChat(chat)
-		setTimeout(fn, sec * 1000)
+		setTimeout(fn, sec * 666)
 	}
 
 	// Dispath an event (of click, por instance)
@@ -188,6 +193,9 @@
 		cb();
 	}
 
+
+
+
 	const start = (_chats, cnt = 0) => {
 		// get next unread chat
 		const chats = _chats || getUnreadChats();
@@ -236,16 +244,30 @@
 		lines.splice(0, 1);
 		var message = lines.join('\n').trim().toLowerCase();
 
+
+
+
+		if (message == 'this message was deleted') {
+			if (username == lastUsername) {
+				sendText = 'Parece que ' + lastUsername + ' se arrependeu de ter enviado "' + lastMessage + '"'
+			}
+		}
+
+
+		lastMessage = message;
+		lastUsername = username;
+
+
 		if (username == 'Brutus') {
 			sendText = 'Brutus, o simpatico'
 		} else if (username == 'GabrielGomes') {
-			if (Math.floor((Math.random() * 6) + 1) == 1)
+			if (rand(5) == 1)
 				sendText = '#JovemEmpreendedor'
 		} else if (username == 'Kaio') {
-			if (Math.floor((Math.random() * 6) + 1) == 1)
+			if (rand(5) == 1)
 				sendText = 'fica quieto ai kaio'
 		} else if (username == 'Juan') {
-			if (Math.floor((Math.random() * 6) + 1) == 1)
+			if (rand(5) == 1)
 				sendText = 'olha o viadinho'
 		} else {
 			if (message == 'sim') {
@@ -308,19 +330,12 @@
 			if (message.indexOf('@time') > -1) {
 				sendText = `*${new Date()}*`
 			}
-			// if(actualMsg.includes('@greet(della)')){
-
-			// 	sendText='Happy Birthday Della!';
-			// }
 			if (message.includes('@joke')) {
 				sendText = jokeList[rand(jokeList.length - 1)];
 
 			}
 
 		}
-
-		// }
-
 
 		// that's sad, there's not to send back...
 		if (!sendText) {
