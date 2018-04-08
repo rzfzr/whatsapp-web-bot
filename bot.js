@@ -241,24 +241,95 @@
 
 
 
-		if (lastMsg.toUpperCase().indexOf('@HELP') > -1) {
-			sendText = `
-				Cool ${title}! Some commands that you can send me:
+		console.log('lastname:' + lastName)
+		console.log('actual:' + actualMsg)
 
-				1. *@TIME*
-				2. *@JOKE*`
+
+		if (lastName == 'Brutus') {
+			sendText = 'Brutus, o simpatico'
+		} else if (lastName == 'GabrielGomes') {
+			if (Math.floor((Math.random() * 6) + 1) == 1)
+				sendText = '#JovemEmpreendedor'
+		} else if (lastName == 'Kaio') {
+			if (Math.floor((Math.random() * 6) + 1) == 1)
+				sendText = 'fica quieto ai kaio'
+		} else if (lastName == 'Juan') {
+			if (Math.floor((Math.random() * 6) + 1) == 1)
+				sendText = 'olha o viadinho'
+		} else {
+			if (actualMsg == 'sim') {
+				sendText = `não`
+			}
+			if (actualMsg == 'não') {
+				sendText = `sim`
+			}
+			if (actualMsg == 'mentira') {
+				sendText = 'verdade'
+			}
+			if (actualMsg == 'verdade') {
+				sendText = 'mentira'
+			}
+			if (actualMsg == 'kaio é idiota?') {
+				sendText = 'com toda certeza'
+			}
+			if (actualMsg == 'good bot') {
+				sendText = 'thanks man'
+			}
+			if (actualMsg == 'bad bot') {
+				sendText = 'ah, vai se fuder vc tambem'
+			}
+
+			if (actualMsg == 'ping' || actualMsg == 'pong') {
+				if (Math.floor((Math.random() * 2) + 1) == 1) {
+					sendText = 'ping'
+				} else {
+					sendText = 'pong'
+				}
+			}
+
+			if (actualMsg.includes('@help')) {
+				sendText = `
+				Cool ${lastName}! Some commands that you can send me:
+				1. *@time*`
+			}
+			if (actualMsg == 'rola?') sendtext = 'rola!'
+			if (actualMsg == 'kkk') sendtext = '#schutzstaffel'
+			if (actualMsg == 'meu') sendtext = 'meu'
+
+			if (actualMsg.includes('aula')) {
+				if (actualMsg.includes('ricardo') || actualMsg.includes('redes') || actualMsg.includes('IA') || actualMsg.includes('glauco')) {
+
+					sendText = `"aula"`
+				}
+			}
+			if (actualMsg.startsWith('para quando') || actualMsg.startsWith('pra quando') || actualMsg.startsWith('quando')) {
+				sendText = 'um dia desses ai trouxa'
+			}
+			if (actualMsg.startsWith('lab') || actualMsg.startsWith('onde') || actualMsg.startsWith('qual lab')) {
+				sendText = 'lab ' + (Math.floor((Math.random() * 4) + 1)).toString();
+			}
+
+			if (actualMsg.includes('deus')) {
+				sendText = 'deus nem existe'
+			}
+
+
+			if (actualMsg.indexOf('@time') > -1) {
+				sendText = `*${new Date()}*`
+			}
+			// if(actualMsg.includes('@greet(della)')){
+
+			// 	sendText='Happy Birthday Della!';
+			// }
+			if (actualMsg.includes('@joke')) {
+				sendText = jokeList[rand(jokeList.length - 1)];
+
+			}
+
 		}
 
-		if (lastMsg.toUpperCase().indexOf('@TIME') > -1) {
-			sendText = `
-				Don't you have a clock, dude?
+		// }
 
-				*${new Date()}*`
-		}
-
-		if (lastMsg.toUpperCase().indexOf('@JOKE') > -1) {
-			sendText = jokeList[rand(jokeList.length - 1)];
-		}
 
 		// that's sad, there's not to send back...
 		if (!sendText) {
