@@ -19,29 +19,43 @@
 	};
 
 
+	// function getJoke() {
+	// 	var req = new XMLHttpRequest();
 
-	const jokeList = [
-		`
-		Husband and Wife had a Fight.
-		Wife called Mom : He fought with me again,
-		I am coming to you.
-		Mom : No beta, he must pay for his mistake,
-		I am comming to stay with U!`,
+	// 	req.onreadystatechange = function () {
+	// 		if (4 == req.readyState && 200 == req.status) {
+	// 			var reponse = JSON.parse(req.responseText);
 
-		`
-		Husband: Darling, years ago u had a figure like Coke bottle.
-		Wife: Yes darling I still do, only difference is earlier it was 300ml now it's 1.5 ltr.`,
+	// 			console.log(reponse);
+	// 		}
+	// 	}
 
-		`
-		God created the earth, 
-		God created the woods, 
-		God created you too, 
-		But then, even God makes mistakes sometimes!`,
+	// 	req.open('GET', 'https://api.icndb.com/jokes/random', true);
+	// 	req.send();
+	// }
 
-		`
-		What is a difference between a Kiss, a Car and a Monkey? 
-		A kiss is so dear, a car is too dear and a monkey is U dear.`
-	]
+	// const jokeList = [
+	// 	`
+	// 	Husband and Wife had a Fight.
+	// 	Wife called Mom : He fought with me again,
+	// 	I am coming to you.
+	// 	Mom : No beta, he must pay for his mistake,
+	// 	I am comming to stay with U!`,
+
+	// 	`
+	// 	Husband: Darling, years ago u had a figure like Coke bottle.
+	// 	Wife: Yes darling I still do, only difference is earlier it was 300ml now it's 1.5 ltr.`,
+
+	// 	`
+	// 	God created the earth, 
+	// 	God created the woods, 
+	// 	God created you too, 
+	// 	But then, even God makes mistakes sometimes!`,
+
+	// 	`
+	// 	What is a difference between a Kiss, a Car and a Monkey? 
+	// 	A kiss is so dear, a car is too dear and a monkey is U dear.`
+	// ]
 
 
 	//
@@ -263,6 +277,12 @@
 		} else if (username == 'GabrielGomes') {
 			if (rand(5) == 1)
 				sendText = '#JovemEmpreendedor'
+		} else if (username == 'Soja') {
+			if (rand(5) == 1)
+				sendText = '#AutistaTbmEhGente'
+		} else if (username == 'Dario') {
+			if (rand(5) == 1)
+				sendText = 'olha o macoero'
 		} else if (username == 'Kaio') {
 			if (rand(5) == 1)
 				sendText = 'fica quieto ai kaio'
@@ -270,10 +290,10 @@
 			if (rand(5) == 1)
 				sendText = 'olha o viadinho'
 		} else {
-			if (message == 'sim') {
+			if (message == 'sim' || message == 's') {
 				sendText = `não`
 			}
-			if (message == 'não') {
+			if (message == 'não' || message == 'n') {
 				sendText = `sim`
 			}
 			if (message == 'mentira') {
@@ -293,7 +313,7 @@
 			}
 
 			if (message == 'ping' || message == 'pong') {
-				if (Math.floor((Math.random() * 2) + 1) == 1) {
+				if (rand(3) == 1) {
 					sendText = 'ping'
 				} else {
 					sendText = 'pong'
@@ -305,10 +325,16 @@
 				Cool ${username}! Some commands that you can send me:
 				1. *@time*`
 			}
-			if (message == 'rola?') sendtext = 'rola!'
-			if (message == 'kkk') sendtext = '#schutzstaffel'
-			if (message == 'meu') sendtext = 'meu'
+			if (message == 'rola?') {
+				sendText = 'rola!'
+			}
+			if (message == 'kkk') {
 
+				sendText = '#schutzstaffel'
+			}
+			if (message == 'meu') {
+				sendText = 'meu'
+			}
 			if (message.includes('aula')) {
 				if (message.includes('ricardo') || message.includes('redes') || message.includes('IA') || message.includes('glauco')) {
 
@@ -331,7 +357,10 @@
 				sendText = `*${new Date()}*`
 			}
 			if (message.includes('@joke')) {
-				sendText = jokeList[rand(jokeList.length - 1)];
+				sendText = username;
+				// getJoke();
+
+				// sendText = jokeList[rand(jokeList.length - 1)];
 
 			}
 
