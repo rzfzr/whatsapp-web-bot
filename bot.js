@@ -45,59 +45,59 @@
 	function rand(high, low = 0) {
 		return Math.floor(Math.random() * (high - low + 1) + low);
 	}
-	
-	function getElement(id, parent){
-		if (!elementConfig[id]){
+
+	function getElement(id, parent) {
+		if (!elementConfig[id]) {
 			return false;
 		}
 		var elem = !parent ? document.body : parent;
 		var elementArr = elementConfig[id];
-		for (var x in elementArr){
+		for (var x in elementArr) {
 			var pos = elementArr[x];
-			if (isNaN(pos*1)){ //dont know why, but for some reason after the last position it loops once again and "pos" is loaded with a function WTF. I got tired finding why and did this
+			if (isNaN(pos * 1)) { //dont know why, but for some reason after the last position it loops once again and "pos" is loaded with a function WTF. I got tired finding why and did this
 				continue;
 			}
-			if (!elem.childNodes[pos]){
+			if (!elem.childNodes[pos]) {
 				return false;
 			}
 			elem = elem.childNodes[pos];
 		}
 		return elem;
 	}
-	
-	function getLastMsg(){
+
+	function getLastMsg() {
 		var messages = document.querySelectorAll('.msg');
-		var pos = messages.length-1;
-		
-		while (messages[pos] && (messages[pos].classList.contains('msg-system') || messages[pos].querySelector('.message-out'))){
+		var pos = messages.length - 1;
+
+		while (messages[pos] && (messages[pos].classList.contains('msg-system') || messages[pos].querySelector('.message-out'))) {
 			pos--;
-			if (pos <= -1){
+			if (pos <= -1) {
 				return false;
 			}
 		}
-		if (messages[pos] && messages[pos].querySelector('.selectable-text')){
+		if (messages[pos] && messages[pos].querySelector('.selectable-text')) {
 			return messages[pos].querySelector('.selectable-text').innerText;
 		} else {
 			return false;
 		}
 	}
-	
-	function getUnreadChats(){
+
+	function getUnreadChats() {
 		var unreadchats = [];
 		var chats = getElement("chats");
-		if (chats){
+		if (chats) {
 			chats = chats.childNodes;
-			for (var i in chats){
-				if (!(chats[i] instanceof Element)){
+			for (var i in chats) {
+				if (!(chats[i] instanceof Element)) {
 					continue;
 				}
 				var icons = getElement("chat_icons", chats[i]).childNodes;
-				if (!icons){
+				if (!icons) {
 					continue;
 				}
-				for (var j in icons){
-					if (icons[j] instanceof Element){
-						if (!(icons[j].childNodes[0].getAttribute('data-icon') == 'muted' || icons[j].childNodes[0].getAttribute('data-icon') == 'pinned')){
+				for (var j in icons) {
+					if (icons[j] instanceof Element) {
+						if (!(icons[j].childNodes[0].getAttribute('data-icon') == 'muted' || icons[j].childNodes[0].getAttribute('data-icon') == 'pinned')) {
 							unreadchats.push(chats[i]);
 							break;
 						}
@@ -107,21 +107,21 @@
 		}
 		return unreadchats;
 	}
-	
-	function didYouSendLastMsg(){
+
+	function didYouSendLastMsg() {
 		var messages = document.querySelectorAll('.msg');
-		if (messages.length <= 0){
+		if (messages.length <= 0) {
 			return false;
 		}
-		var pos = messages.length-1;
-		
-		while (messages[pos] && messages[pos].classList.contains('msg-system')){
+		var pos = messages.length - 1;
+
+		while (messages[pos] && messages[pos].classList.contains('msg-system')) {
 			pos--;
-			if (pos <= -1){
+			if (pos <= -1) {
 				return -1;
 			}
 		}
-		if (messages[pos].querySelector('.message-out')){
+		if (messages[pos].querySelector('.message-out')) {
 			return true;
 		}
 		return false;
@@ -137,19 +137,19 @@
 	// Dispath an event (of click, por instance)
 	const eventFire = (el, etype) => {
 		var evt = document.createEvent("MouseEvents");
-		evt.initMouseEvent(etype, true, true, window,0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		evt.initMouseEvent(etype, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 		el.dispatchEvent(evt);
 	}
 
 	// Select a chat to show the main box
 	const selectChat = (chat, cb) => {
-		const title = getElement("chat_title",chat).title;
+		const title = getElement("chat_title", chat).title;
 		eventFire(chat.firstChild.firstChild, 'mousedown');
 		if (!cb) return;
 		const loopFewTimes = () => {
 			setTimeout(() => {
 				const titleMain = getElement("selected_title").title;
-				if (titleMain !== undefined && titleMain != title){
+				if (titleMain !== undefined && titleMain != title) {
 					console.log('not yet');
 					return loopFewTimes();
 				}
@@ -165,17 +165,17 @@
 		//avoid duplicate sending
 		var title;
 
-		if (chat){
-			title = getElement("chat_title",chat).title;
+		if (chat) {
+			title = getElement("chat_title", chat).title;
 		} else {
 			title = getElement("selected_title").title;
 		}
 		ignoreLastMsg[title] = message;
-		
+
 		messageBox = document.querySelectorAll("[contenteditable='true']")[0];
 
 		//add text into input field
-		messageBox.innerHTML = message.replace(/  /gm,'');
+		messageBox.innerHTML = message.replace(/  /gm, '');
 
 		//Force refresh
 		event = document.createEvent("UIEvents");
@@ -195,21 +195,21 @@
 		// get next unread chat
 		const chats = _chats || getUnreadChats();
 		const chat = chats[cnt];
-		
+
 		var processLastMsgOnChat = false;
 		var lastMsg;
-		
-		if (!lastMessageOnChat){
-			if (false === (lastMessageOnChat = getLastMsg())){
+
+		if (!lastMessageOnChat) {
+			if (false === (lastMessageOnChat = getLastMsg())) {
 				lastMessageOnChat = true; //to prevent the first "if" to go true everytime
 			} else {
 				lastMsg = lastMessageOnChat;
 			}
-		} else if (lastMessageOnChat != getLastMsg() && getLastMsg() !== false && !didYouSendLastMsg()){
+		} else if (lastMessageOnChat != getLastMsg() && getLastMsg() !== false && !didYouSendLastMsg()) {
 			lastMessageOnChat = lastMsg = getLastMsg();
 			processLastMsgOnChat = true;
 		}
-		
+
 		if (!processLastMsgOnChat && (chats.length == 0 || !chat)) {
 			console.log(new Date(), 'nothing to do now... (1)', chats.length, chat);
 			return goAgain(start, 3);
@@ -217,8 +217,8 @@
 
 		// get infos
 		var title;
-		if (!processLastMsgOnChat){
-			title = getElement("chat_title",chat).title + '';
+		if (!processLastMsgOnChat) {
+			title = getElement("chat_title", chat).title + '';
 			lastMsg = (getElement("chat_lastmsg", chat) || { innerText: '' }).innerText; //.last-msg returns null when some user is typing a message to me
 		} else {
 			title = getElement("selected_title").title;
@@ -232,7 +232,16 @@
 		// what to answer back?
 		let sendText
 
-		if (lastMsg.toUpperCase().indexOf('@HELP') > -1){
+
+
+		var lines = lastMsg.split('\n');
+		lastName = lines[0].slice(0, -1)
+		lines.splice(0, 1);
+		var actualMsg = lines.join('\n').trim().toLowerCase();
+
+
+
+		if (lastMsg.toUpperCase().indexOf('@HELP') > -1) {
 			sendText = `
 				Cool ${title}! Some commands that you can send me:
 
@@ -240,17 +249,17 @@
 				2. *@JOKE*`
 		}
 
-		if (lastMsg.toUpperCase().indexOf('@TIME') > -1){
+		if (lastMsg.toUpperCase().indexOf('@TIME') > -1) {
 			sendText = `
 				Don't you have a clock, dude?
 
 				*${new Date()}*`
 		}
 
-		if (lastMsg.toUpperCase().indexOf('@JOKE') > -1){
+		if (lastMsg.toUpperCase().indexOf('@JOKE') > -1) {
 			sendText = jokeList[rand(jokeList.length - 1)];
 		}
-		
+
 		// that's sad, there's not to send back...
 		if (!sendText) {
 			ignoreLastMsg[title] = lastMsg;
@@ -261,12 +270,14 @@
 		console.log(new Date(), 'new message to process, uhull -> ', title, lastMsg);
 
 		// select chat and send message
-		if (!processLastMsgOnChat){
-			selectChat(chat, () => {
-				sendMessage(chat, sendText.trim(), () => {
-					goAgain(() => { start(chats, cnt + 1) }, 0.1);
-				});
-			})
+		if (!processLastMsgOnChat) {
+			setTimeout(function () {
+				selectChat(chat, () => {
+					sendMessage(chat, sendText.trim(), () => {
+						goAgain(() => { start(chats, cnt + 1) }, 0.1);
+					});
+				})
+			}, rand(100, 50))//added small delay in fear of being banned, not sure if needed
 		} else {
 			sendMessage(null, sendText.trim(), () => {
 				goAgain(() => { start(chats, cnt + 1) }, 0.1);
