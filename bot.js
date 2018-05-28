@@ -5,7 +5,7 @@
 
 	var lastMessage = 'a';
 	var lastUsername = 'a';
-
+	var giphyAPIKey='4x54DD8AFblVXRX87fNZzRZZhkRLAUSG';
 
 	var lastMessageOnChat = false;
 	var ignoreLastMsg = {};
@@ -19,20 +19,24 @@
 	};
 
 
-	// function getJoke() {
-	// 	var req = new XMLHttpRequest();
+	function getJoke() {
 
-	// 	req.onreadystatechange = function () {
-	// 		if (4 == req.readyState && 200 == req.status) {
-	// 			var reponse = JSON.parse(req.responseText);
+		var val,
+                src = 'https://avatars2.githubusercontent.com/u/13456224?s=400&u=f3200da4647ab51263d0e38a1a94b9b4ebcf12b4&v=4',
+                img = document.createElement('img');
 
-	// 			console.log(reponse);
-	// 		}
-	// 	}
+            img.src = src;
+		// var req = new XMLHttpRequest();
 
-	// 	req.open('GET', 'https://api.icndb.com/jokes/random', true);
-	// 	req.send();
-	// }
+		// req.onreadystatechange = function () {
+		// 	if (4 == req.readyState && 200 == req.status) {
+		// 		var reponse = JSON.parse(req.responseText);
+		// 		console.log(reponse);
+		// 	}
+		// }
+		// req.open('GET', 'http://api.giphy.com/v1/gifs/search?q=funny+cat&api_key=4x54DD8AFblVXRX87fNZzRZZhkRLAUSG');
+		// req.send();
+	}
 
 	// const jokeList = [
 	// 	`
@@ -194,6 +198,7 @@
 		messageBox = document.querySelectorAll("[contenteditable='true']")[0];
 
 		//add text into input field
+		// messageBox.innerHTML = message.replace(/  /gm, '');
 		messageBox.innerHTML = message.replace(/  /gm, '');
 
 		//Force refresh
@@ -215,8 +220,8 @@
 		const chats = _chats || getUnreadChats();
 		const chat = chats[cnt];
 
-		var processLastMsgOnChat = false;
 		var untreatedMessage;
+		var processLastMsgOnChat = false;
 
 		if (!lastMessageOnChat) {
 			if (false === (lastMessageOnChat = getLastMsg())) {
@@ -250,17 +255,23 @@
 
 		// what to answer back?
 		let sendText
-
-
-
+		var botSent=false;
+		
 		var lines = untreatedMessage.split('\n');
-		username = lines[0].slice(0, -1)
-		lines.splice(0, 1);
-		var message = lines.join('\n').trim().toLowerCase();
-
-
-
-
+		
+		// getJoke();
+		
+		if(lines[0].endsWith(':')){
+			username = lines[0].slice(0, -1);
+			lines.splice(0, 1);
+			var message = lines.join('\n').trim().toLowerCase();
+		}else{
+			return goAgain(start, 3);
+		}
+		
+		// console.log ('untreated:',untreatedMessage);
+		// console.log ('username:',username);
+		// console.log ('message:',message);
 		if (message == 'this message was deleted') {
 			if (username == lastUsername) {
 				sendText = 'Parece que ' + lastUsername + ' se arrependeu de ter enviado "' + lastMessage + '"'
@@ -290,6 +301,7 @@
 			if (rand(5) == 1)
 				sendText = 'olha o viadinho'
 		} else {
+			
 			if (message == 'sim' || message == 's') {
 				sendText = `não`
 			}
@@ -344,19 +356,21 @@
 			if (message.startsWith('para quando') || message.startsWith('pra quando') || message.startsWith('quando')) {
 				sendText = 'um dia desses ai trouxa'
 			}
-			if (message.startsWith('lab') || message.startsWith('onde') || message.startsWith('qual lab')) {
+			else if (message.startsWith('lab') || message.startsWith('onde') || message.startsWith('qual lab')) {
 				sendText = 'lab ' + (Math.floor((Math.random() * 4) + 1)).toString();
 			}
+			else if(message.startsWith('@bot')){
+				console.log('talking directly');
+				// var src = 'https://avatars2.githubusercontent.com/u/13456224?s=400&u=f3200da4647ab51263d0e38a1a94b9b4ebcf12b4&v=4',
+				// img = document.createElement('img');
+				// img.src = src;
 
-			if (message.includes('deus')) {
+				sendText = 'diga';
+			}else if (message.includes('deus')) {
 				sendText = 'deus nem existe'
-			}
-
-
-			if (message.indexOf('@time') > -1) {
+			}else if (message.indexOf('@time') > -1) {
 				sendText = `*${new Date()}*`
-			}
-			if (message.includes('@joke')) {
+			}else if (message.includes('@joke')) {
 				sendText = username;
 				// getJoke();
 
@@ -373,19 +387,19 @@
 			return goAgain(() => { start(chats, cnt + 1) }, 0.1);
 		}
 
-		console.log('to process -> ', title, username, message);
+		console.log('PROCESS -> ', title, username, message);
 
 		// select chat and send message
 		if (!processLastMsgOnChat) {
 			setTimeout(function () {
 				selectChat(chat, () => {
-					sendMessage(chat, sendText.trim(), () => {
+					sendMessage(chat, sendText, () => {//.trim()
 						goAgain(() => { start(chats, cnt + 1) }, 0.1);
 					});
 				})
 			}, rand(100, 50))//added small delay in fear of being banned, not sure if needed
 		} else {
-			sendMessage(null, sendText.trim(), () => {
+			sendMessage(null, sendText, () => {//.trim()
 				goAgain(() => { start(chats, cnt + 1) }, 0.1);
 			});
 		}
