@@ -20,12 +20,6 @@
 
 
 	function getJoke() {
-
-		var val,
-                src = 'https://avatars2.githubusercontent.com/u/13456224?s=400&u=f3200da4647ab51263d0e38a1a94b9b4ebcf12b4&v=4',
-                img = document.createElement('img');
-
-            img.src = src;
 		// var req = new XMLHttpRequest();
 
 		// req.onreadystatechange = function () {
@@ -195,23 +189,130 @@
 		}
 		ignoreLastMsg[title] = message;
 
+		
+
 		messageBox = document.querySelectorAll("[contenteditable='true']")[0];
+		chatBox = document.querySelector('.copyable-area');
+		
+
 
 		//add text into input field
-		// messageBox.innerHTML = message.replace(/  /gm, '');
-		messageBox.innerHTML = message.replace(/  /gm, '');
+		
+		// messageBox.innerHTML = message.replace(/  /gm, '');//original text
+		// messageBox.innerHTML = 'message';// text
 
-		//Force refresh
-		event = document.createEvent("UIEvents");
-		event.initUIEvent("input", true, true, window, 1);
-		messageBox.dispatchEvent(event);
+		messageBox.appendChild(message);//image
+		
+		
+		// messageBox.fireEvent("oncontextmenu")		
+			
+			
+		
+		
+		// document.addEventListener('copy', function(e) {
+			// 	console.log('copied');			
+			// 	e.clipboardData.setData('text/plain', 'HelloaoaoaoWorld!');
+			// 	e.preventDefault();
+			// });
+			
+			//Force refresh
+			event = document.createEvent("UIEvents");
+			event.initUIEvent("input", true, true, window, 1);
+			
+			messageBox.dispatchEvent(event);
 
-		//Click at Send Button
-		eventFire(document.querySelector('span[data-icon="send"]'), 'click');
+
+
+			triggerDragAndDrop();
+			
+			
+			
+			//Click at Send Button
+		// eventFire(document.querySelector('span[data-icon="send"]'), 'click');
 
 		cb();
 	}
 
+
+	var triggerDragAndDrop = function () {
+
+		// function for triggering mouse events
+		var fireMouseEvent = function (type, elem, centerX, centerY) {
+		  var evt = document.createEvent('MouseEvents');
+		  evt.initMouseEvent(type, true, true, window, 1, 1, 1, centerX, centerY, false, false, false, false, 0, elem);
+		  elem.dispatchEvent(evt);
+		};
+	  
+		// fetch target elements
+		// var elemDrag = document.querySelector(selectorDrag);
+		// var elemDrop = document.querySelector(selectorDrop);
+		
+		var elemDrag = document.querySelectorAll("[contenteditable='true']")[0].children[0];
+		var elemDrop = document.querySelector('.copyable-area').children[2].children[2].lastChild.lastChild.lastChild;
+		
+		console.log('drag:',elemDrag);
+		console.log('drop:',elemDrop);
+		// var elemDrag = selectorDrag;
+		// var elemDrop = selectorDrop;
+
+		if (!elemDrag || !elemDrop) return false;
+	  
+		// calculate positions
+		var pos = elemDrag.getBoundingClientRect();
+		var center1X = Math.floor((pos.left + pos.right) / 2);
+		var center1Y = Math.floor((pos.top + pos.bottom) / 2);
+		pos = elemDrop.getBoundingClientRect();
+		var center2X = Math.floor((pos.left + pos.right) / 2);
+		var center2Y = Math.floor((pos.top + pos.bottom) / 2);
+		
+		// mouse over dragged element and mousedown
+		fireMouseEvent('mousemove', elemDrag, center1X, center1Y);
+		fireMouseEvent('mouseenter', elemDrag, center1X, center1Y);
+		fireMouseEvent('mouseover', elemDrag, center1X, center1Y);
+		fireMouseEvent('mousedown', elemDrag, center1X, center1Y);
+		
+		// start dragging process over to drop target
+		fireMouseEvent('dragstart', elemDrag, center1X, center1Y);
+		fireMouseEvent('drag', elemDrag, center1X, center1Y);
+		fireMouseEvent('mousemove', elemDrag, center1X, center1Y);
+		fireMouseEvent('drag', elemDrag, center2X, center2Y);
+		fireMouseEvent('mousemove', elemDrop, center2X, center2Y);
+		
+		// trigger dragging process on top of drop target
+		fireMouseEvent('mouseenter', elemDrop, center2X, center2Y);
+		fireMouseEvent('dragenter', elemDrop, center2X, center2Y);
+		fireMouseEvent('mouseover', elemDrop, center2X, center2Y);
+		fireMouseEvent('dragover', elemDrop, center2X, center2Y);
+		
+		// release dragged element on top of drop target
+		fireMouseEvent('drop', elemDrop, center2X, center2Y);
+		fireMouseEvent('dragend', elemDrag, center2X, center2Y);
+		fireMouseEvent('mouseup', elemDrag, center2X, center2Y);
+	  
+
+		console.log('finished dragging');
+		return true;
+	  };
+
+	  function sleep(milliseconds) {
+		var start = new Date().getTime();
+		for (var i = 0; i < 1e7; i++) {
+		  if ((new Date().getTime() - start) > milliseconds){
+			break;
+		  }
+		}
+	  }
+
+	// const eventFire2 = (el, etype) => {//right click attempt
+		
+	// 	var evt = new MouseEvent('click', {
+	// 		button: 0,
+	// 		buttons: 1,
+	// 		bubbles: true,
+	// 		/* for all available properties see reference below */
+	// 	});
+	// el.dispatchEvent(evt);
+	// }
 
 
 
@@ -283,21 +384,22 @@
 		lastUsername = username;
 
 
-		if (username == 'Brutus') {
-			sendText = 'Brutus, o simpatico'
-		} else if (username == 'GabrielGomes') {
-			if (rand(5) == 1)
-				sendText = '#JovemEmpreendedor'
-		} else if (username == 'Soja') {
-			if (rand(5) == 1)
-				sendText = '#AutistaTbmEhGente'
-		} else if (username == 'Dario') {
-			if (rand(5) == 1)
-				sendText = 'olha o macoero'
-		} else if (username == 'Kaio') {
-			if (rand(5) == 1)
-				sendText = 'fica quieto ai kaio'
-		} else if (username == 'Juan') {
+		// if (username == 'Brutus') {
+		// 	sendText = 'Brutus, o simpatico'
+		// } else if (username == 'GabrielGomes') {
+		// 	if (rand(5) == 1)
+		// 		sendText = '#JovemEmpreendedor'
+		// } else if (username == 'Soja') {
+		// 	if (rand(5) == 1)
+		// 		sendText = '#AutistaTbmEhGente'
+		// } else if (username == 'Dario') {
+		// 	if (rand(5) == 1)
+		// 		sendText = 'olha o macoero'
+		// } else if (username == 'Kaio') {
+		// 	if (rand(5) == 1)
+		// 		sendText = 'fica quieto ai kaio'
+		// } else 
+		if (username == 'Juan') {
 			if (rand(5) == 1)
 				sendText = 'olha o viadinho'
 		} else {
@@ -361,11 +463,14 @@
 			}
 			else if(message.startsWith('@bot')){
 				console.log('talking directly');
-				// var src = 'https://avatars2.githubusercontent.com/u/13456224?s=400&u=f3200da4647ab51263d0e38a1a94b9b4ebcf12b4&v=4',
-				// img = document.createElement('img');
-				// img.src = src;
 
-				sendText = 'diga';
+				var img = new Image();   // Create new img element
+				img.src = 'https://avatars2.githubusercontent.com/u/13456224?s=400&u=f3200da4647ab51263d0e38a1a94b9b4ebcf12b4&v=4'; 
+			
+				// ClipboardEvent.clipboardData.setData("text/plain", "testesetestesteset");
+				// data = ClipboardEvent.clipboardData;
+				sendText = img;
+
 			}else if (message.includes('deus')) {
 				sendText = 'deus nem existe'
 			}else if (message.indexOf('@time') > -1) {
