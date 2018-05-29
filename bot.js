@@ -250,11 +250,47 @@
 		var elemDrag = document.querySelectorAll("[contenteditable='true']")[0].children[0];
 		var elemDrop = document.querySelector('.copyable-area').children[2].children[2].lastChild.lastChild.lastChild;
 		
-		console.log('drag:',elemDrag);
-		console.log('drop:',elemDrop);
+		var rectDrag = elemDrag.getBoundingClientRect();
+		var rectDrop = elemDrop.getBoundingClientRect();
+
+		var dragPosition = {
+			top: rectDrag.top + window.pageYOffset,
+			left: rectDrag.left + window.pageXOffset
+		  };
+		  var dropPosition = {
+			top: rectDrop.top + window.pageYOffset,
+			left: rectDrop.left + window.pageXOffset
+		  };
+	
+
+		console.log('drag:',elemDrag,'pos:',rectDrag.top)//, 'pos1:', elemDrag.offsetRight);
+		console.log('drop:',elemDrop,'pos:',rectDrop.top)//,'pos1:',elemDrop.offsetRight);
 		// var elemDrag = selectorDrag;
 		// var elemDrop = selectorDrop;
 
+			var elem = document.querySelectorAll("[contenteditable='true']")[0].children[0]; 
+		var pos = rectDrag.top;
+		var id = setInterval(frame, 10);
+		function frame() {
+		    if (pos == rectDrop.top) {
+		        clearInterval(id);
+		    } else {
+		        pos++; 
+		        elem.style.top = pos + 'px'; 
+		        elem.style.left = pos + 'px'; 
+		    }
+		}
+
+
+
+
+		
+		
+		
+
+
+		
+		
 		if (!elemDrag || !elemDrop) return false;
 	  
 		// calculate positions
